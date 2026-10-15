@@ -136,8 +136,15 @@ public class FASTAReader {
 	 * pattern when one has been found to be different.
 	 */
 	private boolean compareImproved(byte[] pattern, int position) throws FASTAException {
-		// TODO
-		return false;
+		if (position + pattern.length > validBytes) {
+			throw new FASTAException("Pattern goes beyond the end of the file.");
+		}
+		for (int i = 0; i < pattern.length; i++) {
+			if(pattern[i] != content[position + i]){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/*
@@ -166,7 +173,7 @@ public class FASTAReader {
 		List<Integer> positions = new ArrayList<Integer>();
 		for (int i = 0; i < validBytes; i++){
 			try {
-				if(compare(pattern, i))
+				if(compareImproved(pattern, i))
 					positions.add(i);
 			}catch (FASTAException e) {
 				return positions;
